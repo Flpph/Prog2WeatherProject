@@ -19,3 +19,14 @@ To run the app you need two API keys. You can get them [here]("https://locationi
 | ----------- | ----------- |
 | 1.000.000 requests /month | 5000 requests /day |
 | 60 requests /minute | 2 requests /second |
+
+## Config
+
+To run the app, you need a `config.json` file which looks something like this:
+
+```json 
+{
+    "openWeatherAppId": "Your openweathermap.org app id",
+    "locationApiKey": "Your locationiq.com api key",
+}
+```
