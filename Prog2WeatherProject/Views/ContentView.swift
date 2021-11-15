@@ -9,15 +9,8 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    
-    private var items: FetchedResults<Item>
-    
     private var weatherService: WeatherService = WeatherService()
+    @ObservedObject var savedCitiesVM = SavedCitiesViewModel()
     @StateObject var searchData = SearchCities()
     @StateObject var locationManager = LocationManager()
     @ObservedObject var currentLocationVM = CurrentWeatherViewModel()
@@ -25,7 +18,7 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack {
-                CustomSearchBar(searchResult: searchData)
+                CustomSearchBar(searchResult: searchData, citiesVM: savedCitiesVM)
                 List {
                     // Current Location at the top of the list. (Disabled when current location is not accessable.)
                     NavigationLink {
@@ -43,22 +36,32 @@ struct ContentView: View {
                     .deleteDisabled(true)
                     
                     // Saved cities.
-                    ForEach(items) { item in
+                    ForEach(savedCitiesVM.cities, id: \.id) { item in
                         NavigationLink {
-                            Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+                            WeatherView(weather: item)
                         } label: {
-                            Text(item.timestamp!, formatter: itemFormatter)
-                                .font(.title3)
+                            VStack(alignment: .leading) {
+                                Text(item.cityName)
+                                    .font(.title3)
+                                Text(item.timezone)
+                                    .font(.subheadline)
+                            }
+                        }
+                        .contextMenu
+                        {
+                            Button(action: {
+                                savedCitiesVM.deleteCity(cityVM: item)
+                            }, label:
+                            {
+                                HStack {
+                                    Image(systemName: "trash")
+                                    Text("Delete")
+                                }
+                            })
                         }
                     }
-                    .onDelete(perform: deleteItems)
                 }
                 .listStyle(PlainListStyle())
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        EditButton()
-                    }
-                }
             }
             .navigationTitle("Cities")
             .onChange(of: searchData.query) { newValue in
@@ -75,33 +78,6 @@ struct ContentView: View {
             }
         }
     }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
 }
 
 private let itemFormatter: DateFormatter = {
@@ -113,6 +89,6 @@ private let itemFormatter: DateFormatter = {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        ContentView()
     }
 }
