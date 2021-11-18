@@ -63,7 +63,7 @@ struct ContentView: View {
                 }
                 .listStyle(PlainListStyle())
             }
-            .navigationTitle("Cities")
+            .navigationTitle("Weather")
             .onChange(of: searchData.query) { newValue in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                     if newValue == searchData.query {

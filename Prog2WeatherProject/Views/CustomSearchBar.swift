@@ -23,7 +23,7 @@ struct CustomSearchBar: View {
                     Image(systemName: "magnifyingglass")
                     TextField("Search...", text: $searchResult.query)
                 }
-                .foregroundColor(.gray)
+                .foregroundColor(.primary)
                 .padding()
                 
                 if !searchResult.searchedCities.isEmpty {
@@ -70,7 +70,7 @@ struct CustomSearchBar: View {
                     .frame(height: CGFloat(searchResult.searchedCities.count) * 60)
                 }
             }
-            .background(Color("SearchBar"))
+            .background(Color.secondary)
             .clipShape(RoundedRectangle(cornerRadius: 20))
             .padding()
         }

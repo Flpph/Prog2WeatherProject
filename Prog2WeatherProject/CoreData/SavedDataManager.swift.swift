@@ -64,6 +64,18 @@ class SavedDataManager {
         save()
     }
     
+    func saveCity(cityVM: WeatherViewModel) {
+        guard let city = getCityById(id: cityVM.id) else {
+            return
+        }
+        
+        // Currently only saving the timezone
+        
+        city.timezone = cityVM.timezone;
+        
+        save()
+    }
+    
     func addCity(city: CitiesModel) {
         let entity = City(context: viewContext)
         entity.country = city.address.country
