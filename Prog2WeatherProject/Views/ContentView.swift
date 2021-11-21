@@ -14,6 +14,11 @@ struct ContentView: View {
     @StateObject var searchData = SearchCities()
     @StateObject var locationManager = LocationManager()
     @ObservedObject var currentLocationVM = CurrentWeatherViewModel()
+    
+    func removeCity(at offsets: IndexSet) {
+        let index = offsets[offsets.startIndex]
+        savedCitiesVM.deleteCity(cityVM: savedCitiesVM.cities[index])
+    }
 
     var body: some View {
         NavigationView {
@@ -43,7 +48,7 @@ struct ContentView: View {
                             VStack(alignment: .leading) {
                                 Text(item.cityName)
                                     .font(.title3)
-                                Text(item.timezone)
+                                Text(item.country)
                                     .font(.subheadline)
                             }
                         }
@@ -60,6 +65,7 @@ struct ContentView: View {
                             })
                         }
                     }
+                    .onDelete(perform: removeCity)
                 }
                 .listStyle(PlainListStyle())
             }

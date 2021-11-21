@@ -10,7 +10,7 @@ import Combine
 import CoreData
 
 class SavedCitiesViewModel: ObservableObject {
-    @Published private(set) var cities: [WeatherViewModel] = []
+    @Published private(set) var cities: [CityViewModel] = []
 
     init() {
         loadCities()
@@ -27,13 +27,13 @@ class SavedCitiesViewModel: ObservableObject {
     }
     
     public func appendCity(city: City) {
-        let cityViewModel = WeatherViewModel(city: city)
+        let cityViewModel = CityViewModel(city: city)
         DispatchQueue.main.async {
             self.cities.append(cityViewModel)
         }
     }
     
-    public func deleteCity(cityVM: WeatherViewModel) {
+    public func deleteCity(cityVM: CityViewModel) {
         guard let existingCity = SavedDataManager.shared.getCityById(id: cityVM.id)
             else { return }
         
@@ -44,7 +44,7 @@ class SavedCitiesViewModel: ObservableObject {
         self.cities.remove(at: index)
     }
     
-    public func getCityViewModelById(id: String) -> WeatherViewModel? {
+    public func getCityViewModelById(id: String) -> CityViewModel? {
         let indexOfCityVM = cities.firstIndex{$0.id == id}
         
         if indexOfCityVM != nil {

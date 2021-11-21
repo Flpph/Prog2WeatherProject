@@ -54,7 +54,7 @@ class SavedDataManager {
         save()
     }
     
-    func deleteCityByVM(cityVM: WeatherViewModel) {
+    func deleteCityByVM(cityVM: CityViewModel) {
         guard let city = getCityById(id: cityVM.id) else {
             return
         }
@@ -64,7 +64,7 @@ class SavedDataManager {
         save()
     }
     
-    func saveCity(cityVM: WeatherViewModel) {
+    func saveCity(cityVM: CityViewModel) {
         guard let city = getCityById(id: cityVM.id) else {
             return
         }

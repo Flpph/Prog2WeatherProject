@@ -70,7 +70,7 @@ struct CustomSearchBar: View {
                     .frame(height: CGFloat(searchResult.searchedCities.count) * 60)
                 }
             }
-            .background(Color.secondary)
+            .background(Color(.systemGray6))
             .clipShape(RoundedRectangle(cornerRadius: 20))
             .padding()
         }

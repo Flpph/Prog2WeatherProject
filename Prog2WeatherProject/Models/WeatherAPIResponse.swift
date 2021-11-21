@@ -96,4 +96,5 @@ struct DailyWeather: Decodable, Identifiable {
 struct DailyWeatherTemperature: Decodable {
     var min: Double
     var max: Double
+    var day: Double
 }

@@ -27,4 +27,10 @@ final class DateTimeManager {
         formatter.dateFormat = "EEEE, d MMM"
         return formatter.string(from: epochToHumanDate(timestamp: timestamp))
     }
+    
+    func epochToDayL(timestamp: Int) -> String {
+        // expected return example -> Tue
+        formatter.dateFormat = "EEE"
+        return formatter.string(from: epochToHumanDate(timestamp: timestamp))
+    }
 }

@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import SwiftUI
 
-class WeatherViewModel: ObservableObject, Equatable {
-    static func == (lhs: WeatherViewModel, rhs: WeatherViewModel) -> Bool {
+class CityViewModel: ObservableObject, Equatable {
+    static func == (lhs: CityViewModel, rhs: CityViewModel) -> Bool {
         return lhs.id == rhs.id
     }
     
@@ -23,9 +24,9 @@ class WeatherViewModel: ObservableObject, Equatable {
     @Published var current: CurrentWeather
     @Published var hourly: [HourlyWeather]
     @Published var daily: [DailyWeather]
-    @Published var error: Error?
     
-    @Published var isFetching: Bool = true
+    @Published var error: Error?
+    @Published var isFetching = true
     
     let defaultIcon = "questionmark"
     let iconMap = [
@@ -55,7 +56,7 @@ class WeatherViewModel: ObservableObject, Equatable {
         self.country = "Unknown"
         self.current = CurrentWeather(datetime: 0, temperature: 0.0, feels_like: 0.0, pressure: 0, humidity: 0, visibility: 0, wind_speed: 0.0, uvi: 0.0, weather: [CurrentWeatherDescription(main: "Unknown", description: "Unknown")])
         self.hourly = [HourlyWeather(datetime: 0, temperature: 0.0, weather: [CurrentWeatherDescription(main: "Unknown", description: "Unknown")])]
-        self.daily = [DailyWeather(datetime: 0, temperature: DailyWeatherTemperature(min: 0.0, max: 0.0), weather: [CurrentWeatherDescription(main: "Unknown", description: "Unknown")])]
+        self.daily = [DailyWeather(datetime: 0, temperature: DailyWeatherTemperature(min: 0.0, max: 0.0, day: 0.0), weather: [CurrentWeatherDescription(main: "Unknown", description: "Unknown")])]
     }
     
     init(city: City) {
@@ -69,14 +70,12 @@ class WeatherViewModel: ObservableObject, Equatable {
         // Dummy data, unfetched
         self.current = CurrentWeather(datetime: 0, temperature: 0.0, feels_like: 0.0, pressure: 0, humidity: 0, visibility: 0, wind_speed: 0.0, uvi: 0.0, weather: [CurrentWeatherDescription(main: "Unknown", description: "Unknown")])
         self.hourly = [HourlyWeather(datetime: 0, temperature: 0.0, weather: [CurrentWeatherDescription(main: "Unknown", description: "Unknown")])]
-        self.daily = [DailyWeather(datetime: 0, temperature: DailyWeatherTemperature(min: 0.0, max: 0.0), weather: [CurrentWeatherDescription(main: "Unknown", description: "Unknown")])]
+        self.daily = [DailyWeather(datetime: 0, temperature: DailyWeatherTemperature(min: 0.0, max: 0.0, day: 0.0), weather: [CurrentWeatherDescription(main: "Unknown", description: "Unknown")])]
         
     }
     
     func fetchData(cityName: String, lat: Double, lon: Double) {
-        DispatchQueue.main.async {
-            self.isFetching = true
-        }
+        self.isFetching = true
         
         weatherService.getWeatherForCity(lat: lat, lon: lon) { result in
             guard let data = result else {

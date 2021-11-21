@@ -27,7 +27,7 @@ class CurrentWeatherViewModel: ObservableObject {
         self.timezone = "Unknown"
         self.current = CurrentWeather(datetime: 0, temperature: 0.0, feels_like: 0.0, pressure: 0, humidity: 0, visibility: 0, wind_speed: 0.0, uvi: 0.0, weather: [CurrentWeatherDescription(main: "Unknown", description: "Unknown")])
         self.hourly = [HourlyWeather(datetime: 0, temperature: 0.0, weather: [CurrentWeatherDescription(main: "Unknown", description: "Unknown")])]
-        self.daily = [DailyWeather(datetime: 0, temperature: DailyWeatherTemperature(min: 0.0, max: 0.0), weather: [CurrentWeatherDescription(main: "Unknown", description: "Unknown")])]
+        self.daily = [DailyWeather(datetime: 0, temperature: DailyWeatherTemperature(min: 0.0, max: 0.0, day: 0.0), weather: [CurrentWeatherDescription(main: "Unknown", description: "Unknown")])]
     }
     
     func fetchData() {
