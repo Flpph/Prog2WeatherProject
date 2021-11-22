@@ -36,6 +36,32 @@ class CititesService {
         }.resume()
     }
     
+    func fetchReverseGeocoding(lat: Double, lon: Double, completion: @escaping ((ReverseGeocodingResponse?) -> Void)) {
+        guard let requestURL = buildReverseGeocodingURL(lat: lat, lon: lon) else {
+            return completion(nil)
+        }
+        
+        URLSession.shared.dataTask(with: requestURL) { data, response, error in
+            guard let data = data, error == nil else {
+                return completion(nil)
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print(String(describing: response))
+                completion(nil)
+                return
+            }
+            
+            do {
+                let json = try JSONDecoder().decode(ReverseGeocodingResponse.self, from: data)
+                completion(json)
+            } catch let err {
+                print(String(describing: err))
+                completion(nil)
+            }
+        }.resume()
+    }
+    
     private func buildGeocodingURL(query: String) -> URL? {
         let queryItems = [
             URLQueryItem(name: "format", value: "json"),
@@ -45,6 +71,20 @@ class CititesService {
             URLQueryItem(name: "tag", value: "place:city,place:town,place:village")
         ]
         var components = URLComponents(string: "https://eu1.locationiq.com/v1/autocomplete.php")
+        components?.queryItems = queryItems
+        
+        return components?.url
+    }
+    
+    private func buildReverseGeocodingURL(lat: Double, lon: Double) -> URL? {
+        let queryItems = [
+            URLQueryItem(name: "key", value: self.key),
+            URLQueryItem(name: "lat", value: String(lat)),
+            URLQueryItem(name: "lon", value: String(lon)),
+            URLQueryItem(name: "format", value: "json")
+        ]
+        
+        var components = URLComponents(string: "https://eu1.locationiq.com/v1/reverse.php")
         components?.queryItems = queryItems
         
         return components?.url

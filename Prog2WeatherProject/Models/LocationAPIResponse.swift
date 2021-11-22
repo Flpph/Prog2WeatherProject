@@ -24,3 +24,25 @@ struct Address: Codable, Equatable {
     var name: String
     var country: String
 }
+
+struct ReverseGeocodingResponse: Decodable {
+    var id: String
+    var lat: String
+    var lon: String
+    var displayName: String
+    var address: GeoAddress
+    
+    enum CodingKeys: String, CodingKey {
+        case id = "place_id"
+        case displayName = "display_name"
+        case lat,lon,address
+    }
+}
+
+struct GeoAddress: Codable {
+    var county: String
+    var country: String
+    var city: String?
+    var village: String?
+    var town: String?
+}

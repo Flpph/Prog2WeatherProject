@@ -13,7 +13,7 @@ struct ContentView: View {
     @ObservedObject var savedCitiesVM = SavedCitiesViewModel()
     @StateObject var searchData = SearchCities()
     @StateObject var locationManager = LocationManager()
-    @ObservedObject var currentLocationVM = CurrentWeatherViewModel()
+    @ObservedObject var currentLocationVM = CurrentLocationViewModel()
     
     func removeCity(at offsets: IndexSet) {
         let index = offsets[offsets.startIndex]
