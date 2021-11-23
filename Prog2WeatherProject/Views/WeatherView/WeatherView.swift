@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WeatherView: View {
     @ObservedObject var weather: CityViewModel
+    @EnvironmentObject var savedCitiesVM: SavedCitiesViewModel
     
     var dateTimeManager = DateTimeManager()
     
@@ -34,15 +35,15 @@ struct WeatherView: View {
                 
                 Image(systemName: weather.iconMap[weather.current.weatherMain] ?? weather.defaultIcon)
                     .font(.system(size: 70))
-                Text("\(String(format: "%.0f", (weather.current.temperature)) )º")
+                Text("\(String(format: "%.0f", (savedCitiesVM.unit == "metric" ? weather.current.temperature : weather.current.temperature * 9/5+32)) )º")
                     .bold()
                     .font(.system(size: 70))
                 Text(weather.current.weatherDescription)
                     .font(.title2)
                     .foregroundColor(.secondary)
                 HStack {
-                    Text("\(String(format: "H: %.0f", (weather.daily[0].temperature.max)) )º")
-                    Text("\(String(format: "L: %.0f", (weather.daily[0].temperature.min)) )º")
+                    Text("\(String(format: "H: %.0f", (savedCitiesVM.unit == "metric" ? weather.daily[0].temperature.max : weather.daily[0].temperature.max * 9/5+32)) )º")
+                    Text("\(String(format: "L: %.0f", (savedCitiesVM.unit == "metric" ? weather.daily[0].temperature.min : weather.daily[0].temperature.min * 9/5+32)) )º")
                 }.font(.title3).foregroundColor(.secondary)
                 
                 Spacer()
@@ -67,7 +68,7 @@ struct WeatherView: View {
                                     
                                     Spacer()
                                     
-                                    Text("\(String(format: "%.0f", (hourly.temperature)) )º")
+                                    Text("\(String(format: "%.0f", (savedCitiesVM.unit == "metric" ? hourly.temperature : hourly.temperature * 9/5+32)) )º")
                                         .foregroundColor(.primary)
                                         .font(.title3)
                                         .frame(width: 75)
@@ -98,11 +99,11 @@ struct WeatherView: View {
                                 
                                 Spacer()
                                 
-                                Text("\(String(format: "H: %.0f", (daily.temperature.max)) )º")
+                                Text("\(String(format: "H: %.0f", (savedCitiesVM.unit == "metric" ? daily.temperature.max : daily.temperature.min * 9/5+32)) )º")
                                 
                                 Spacer()
                                 
-                                Text("\(String(format: "L: %.0f", (daily.temperature.min)) )º")
+                                Text("\(String(format: "L: %.0f", (savedCitiesVM.unit == "metric" ? daily.temperature.min : daily.temperature.min * 9/5+32)) )º")
                             }
                             .frame(height: 25)
                             .padding(.horizontal)
@@ -120,6 +121,12 @@ struct WeatherView: View {
                     }, label: {
                         Image(systemName: "arrow.clockwise")
                         Text("Refresh Weather Data")
+                    })
+                    Picker("Unit Type", selection: $savedCitiesVM.unit) {
+                        Text("Metric (C)").tag("metric")
+                        Text("Imperial (F)").tag("imperial")
+                    }.onChange(of: savedCitiesVM.unit, perform: { _ in
+                            savedCitiesVM.changeUnit()
                     })
                 } label: {
                     Image(systemName: "ellipsis").font(.title3).foregroundColor(.primary)

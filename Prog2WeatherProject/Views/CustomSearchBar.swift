@@ -15,6 +15,7 @@ struct CustomSearchBar: View {
     @ObservedObject var citiesVM: SavedCitiesViewModel
     
     @State private var showRemoveAlert: Bool = false
+    @State private var isEditing = false
     
     var body: some View {
         ZStack {
@@ -22,6 +23,19 @@ struct CustomSearchBar: View {
                 HStack(spacing:12) {
                     Image(systemName: "magnifyingglass")
                     TextField("Search...", text: $searchResult.query)
+                        .onTapGesture {
+                        self.isEditing = true
+                    }
+                    
+                    if isEditing {
+                        Button(action: {
+                            self.isEditing = false
+                            self.searchResult.query = ""
+                        }) {
+                            Text("Cancel")
+                        }
+                        .padding(.trailing, 10)
+                    }
                 }
                 .foregroundColor(.primary)
                 .padding()

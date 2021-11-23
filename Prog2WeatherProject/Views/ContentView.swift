@@ -69,7 +69,7 @@ struct ContentView: View {
                 }
                 .listStyle(PlainListStyle())
             }
-            .navigationTitle("Weather")
+            .navigationBarHidden(true)
             .onChange(of: searchData.query) { newValue in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                     if newValue == searchData.query {
@@ -82,7 +82,7 @@ struct ContentView: View {
                     }
                 }
             }
-        }
+        }.environmentObject(savedCitiesVM)
     }
 }
 

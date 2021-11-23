@@ -11,6 +11,7 @@ import CoreData
 
 class SavedCitiesViewModel: ObservableObject {
     @Published private(set) var cities: [CityViewModel] = []
+    @Published var unit = UserDefaults.standard.string(forKey: "unit") ?? "metric"
 
     init() {
         loadCities()
@@ -51,5 +52,9 @@ class SavedCitiesViewModel: ObservableObject {
             return cities[indexOfCityVM!]
         }
         return nil
+    }
+    
+    func changeUnit() {
+        UserDefaults.standard.set(unit, forKey: "unit")
     }
 }
